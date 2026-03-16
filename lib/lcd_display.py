@@ -102,10 +102,6 @@ def draw_menu(items, bg_color=0x000000, highlight_bg=0x005500):
         lbl.anchor_point = item.get("anchor_point", (0, 0))
         lbl.anchored_position = (item.get("x", 0), item.get("y", 0))
 
-        # crude highlight handling — tint highlighted items
-        if item.get("highlighted", False):
-            lbl.color = highlight_bg
-
     # ensure our group is the active one (fixes stuck Arasaka logo)
     if _DISPLAY.root_group is not _ROOT:
         _DISPLAY.root_group = _ROOT

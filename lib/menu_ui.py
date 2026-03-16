@@ -102,7 +102,7 @@ class MenuController:
 
         layers_menu = [
             MenuItem("Back", kind="action", on_select=self.go_back),
-            MenuItem("Default", kind="action", on_select=action_print("Layer: Default")),
+            MenuItem("Default", kind="action", on_select=action_print("Layer: Default")),  # TODO: implement actual layer switching
         ]
 
         lights_menu = [
@@ -298,7 +298,6 @@ class MenuController:
         filled = int(round(ratio * filled_chars))
         filled = max(0, min(filled, filled_chars))
 
-        # Use Unicode blocks for a cleaner look
         bar = "[" + "-" * filled + " " * (filled_chars - filled) + "]"
 
         items = [

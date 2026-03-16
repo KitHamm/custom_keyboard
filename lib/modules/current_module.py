@@ -17,8 +17,8 @@ class CurrentMonitor(Module):
             self._last_poll = now
             try:
                 self.current = self.ina.current
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[CurrentMonitor] INA219 read error: {e}")
 
     def after_matrix_scan(self, keyboard):
         pass

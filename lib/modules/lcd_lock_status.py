@@ -55,8 +55,8 @@ class LCDLockStatus(Extension):
                 changed = True
             if changed and self.menu.get_ui_state() == 'idle':
                 self.menu.return_to_idle()
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[LCDLockStatus] HID report error: {e}")
 
     def on_powersave_enable(self, sandbox):
         pass

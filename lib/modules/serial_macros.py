@@ -42,6 +42,9 @@ class SerialMacros(Module):
         try:
             n = supervisor.runtime.serial_bytes_available
             if n:
+                if len(self._buf) > 256:
+                    print("[SerialMacros] buffer overflow, clearing")
+                    self._buf = ''
                 data = sys.stdin.read(n)
                 self._buf += data
                 while '\n' in self._buf:
@@ -49,8 +52,8 @@ class SerialMacros(Module):
                     line = line.strip()
                     if line:
                         self._handle_incoming(line, now)
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[SerialMacros] read error: {e}")
 
         if not self._connected:
             # Broadcast HANDSHAKE_REQUEST until acknowledged
@@ -58,16 +61,16 @@ class SerialMacros(Module):
                 self._last_handshake = now
                 try:
                     print('HANDSHAKE_REQUEST')
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[SerialMacros] handshake send error: {e}")
         else:
             # Send PING keepalive
             if now - self._last_ping_sent >= _PING_INTERVAL:
                 self._last_ping_sent = now
                 try:
                     print('PING')
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[SerialMacros] ping send error: {e}")
 
             # Detect lost connection (no PONG received in time)
             if now - self._last_pong_received >= _PING_TIMEOUT:
@@ -88,13 +91,13 @@ class SerialMacros(Module):
         try:
             from menu_ui import set_connection_state
             set_connection_state(state)
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[SerialMacros] set_connection_state error: {e}")
         if self.menu and self.menu.get_ui_state() == 'idle':
             try:
                 self.menu.return_to_idle()
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[SerialMacros] idle refresh error: {e}")
 
     def after_matrix_scan(self, keyboard):
         pass

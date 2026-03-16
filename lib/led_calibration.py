@@ -1,4 +1,5 @@
 import time
+from collections import deque
 
 SAFE_MAX_CURRENT = None
 CALIBRATED_BRIGHTNESS = None
@@ -25,7 +26,7 @@ class LedCalibration:
         self.pixels.show()
         time.sleep(0.1)
 
-        readings = []
+        readings = deque((), self.window_size)
         consecutive_plateau = 0
         brightness = 0.0
 
@@ -38,13 +39,11 @@ class LedCalibration:
             current = self.ina.current
             self.max_current = max(self.max_current, current)
 
-            readings.append(current)
-            if len(readings) > self.window_size:
-                readings.pop(0)
+            readings.append(current)  # deque evicts oldest automatically
 
             avg_current = sum(readings) / len(readings)
             if len(readings) == self.window_size:
-                prev_avg = sum(readings[:-1]) / (self.window_size - 1)
+                prev_avg = sum(list(readings)[:-1]) / (self.window_size - 1)
                 delta = avg_current - prev_avg
                 if delta < self.threshold:
                     consecutive_plateau += 1
