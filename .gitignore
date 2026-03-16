@@ -1,0 +1,20 @@
+# CircuitPython auto-generated
+boot_out.txt
+
+# macOS
+.fseventsd
+.metadata_never_index
+.Trashes
+.Trash-1000
+
+# Windows
+System Volume Information
+
+# Editor
+.vscode
+
+# Claude reference files
+.claude
+
+# SD card contents
+sd/
