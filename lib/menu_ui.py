@@ -16,17 +16,9 @@ _idle_state = {
 
     # ---------- Idle state management ----------
 def set_connection_state(is_connected: bool):
-    """Update connection indicator and refresh idle screen if visible."""
+    """Update the connection indicator flag. Callers are responsible for refreshing the display."""
     global _idle_state
-    if _idle_state["connected"] != is_connected:
-        _idle_state["connected"] = is_connected
-        try:
-            from kmk.kmk_keyboard import active_keyboard
-            if active_keyboard and hasattr(active_keyboard, "menu"):
-                if active_keyboard.menu.get_ui_state() == "idle":
-                    active_keyboard.menu.return_to_idle()
-        except Exception:
-            pass
+    _idle_state["connected"] = is_connected
 
 
 # ---------- Menu primitives ----------
@@ -75,8 +67,9 @@ class MenuController:
         self.start_y = 40
         self.line_gap = 35
 
-        # timestamp for debounce
-        self._last_press_time = 0  
+        # timestamps for debounce and info screen refresh
+        self._last_press_time = 0
+        self._last_info_update = 0
 
         # build + open main menu
         self.root_menu = self._build_menu()
@@ -466,7 +459,6 @@ class MenuController:
         time.sleep(1.3)
 
         # 2. Controlled chaos: glitch → degrade → vanish
-        base = "ARASAKA"
         frames = [
             "ARASAKA",
             "AARSAAK",
@@ -595,8 +587,6 @@ class MenuController:
         if self.info_active and self.current_monitor:
             now = time.monotonic()
             # Only redraw every ~0.25s (match your INA219 poll rate)
-            if not hasattr(self, "_last_info_update"):
-                self._last_info_update = 0
             if now - self._last_info_update >= 0.25:
                 self._last_info_update = now
                 self._draw_info()

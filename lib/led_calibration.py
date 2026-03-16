@@ -32,7 +32,7 @@ class LedCalibration:
         while True:
             self.pixels.brightness = brightness
             self.pixels.fill((0, 255, 0))
-            self.pixels.show()
+            self.pixels.show()  # explicit push (auto_write=False)
             time.sleep(self.delay)
 
             current = self.ina.current
@@ -64,8 +64,3 @@ class LedCalibration:
         CALIBRATED_BRIGHTNESS = brightness
 
         print(f"[LED CAL DONE] Max {self.max_current:.2f} mA | Safe {SAFE_MAX_CURRENT:.2f} mA | Bright {CALIBRATED_BRIGHTNESS:.2f}")
-
-        # Leave LEDs lit green at calibrated brightness
-        # self.pixels.brightness = CALIBRATED_BRIGHTNESS
-        # self.pixels.fill((0, 255, 0))
-        # self.pixels.show()

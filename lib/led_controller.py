@@ -13,8 +13,8 @@ class LedController:
         self.user_brightness = 100
 
         # calibration + safety limits
-        self.safe_max_current = SAFE_MAX_CURRENT or 500  # mA
-        self.calibrated_brightness = CALIBRATED_BRIGHTNESS or 0.5
+        self.safe_max_current = SAFE_MAX_CURRENT if SAFE_MAX_CURRENT is not None else 500  # mA
+        self.calibrated_brightness = CALIBRATED_BRIGHTNESS if CALIBRATED_BRIGHTNESS is not None else 0.5
         self.max_led_current_mA = 60
         self.num_leds = len(pixels)
 
@@ -22,10 +22,6 @@ class LedController:
         self._apply_brightness()
 
     # --- internal helpers ---
-
-    def _estimate_current(self, r, g, b, brightness):
-        ratio = (r + g + b) / (255 * 3)
-        return ratio * self.max_led_current_mA * brightness * self.num_leds
 
     def _calculate_safe_brightness(self):
         color_ratio = (self.red + self.green + self.blue) / (255.0 * 3.0)

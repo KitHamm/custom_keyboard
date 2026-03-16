@@ -28,7 +28,7 @@ from led_controller import LedController
 
 # --- LED setup ---
 NUM_LEDS = 50
-pixels = neopixel.NeoPixel(board.D12, NUM_LEDS, brightness=0, auto_write=True)
+pixels = neopixel.NeoPixel(board.D12, NUM_LEDS, brightness=0, auto_write=False)
 pixels.fill((0, 0, 0))
 pixels.show()
 
@@ -148,6 +148,5 @@ keyboard.keymap = [
 # RUN KMK
 # ==========================================================
 
-if __name__ == "__main__":
-    menu.play_boot_animation()
-    keyboard.go()
+menu.play_boot_animation()
+keyboard.go()
