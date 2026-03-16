@@ -3,8 +3,8 @@ from kmk.modules import Module
 
 
 class CurrentMonitor(Module):
-    def __init__(self):
-        self.ina = None
+    def __init__(self, ina=None):
+        self.ina = ina
         self.current = 0.0
         self._last_poll = 0
 

@@ -17,8 +17,8 @@ def _make_press_handler(get_connected, serial_id):
 
 
 class SerialMacros(Module):
-    def __init__(self):
-        self.menu = None
+    def __init__(self, menu=None):
+        self.menu = menu
         self._buf = ''
         self._connected = False
         self._last_handshake = 0

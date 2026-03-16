@@ -56,34 +56,27 @@ encoder_handler = EncoderHandlerWithFuncs()
 media_keys = MediaKeys()
 layers = Layers()
 
-# Initialize power monitoring
-current_monitor = CurrentMonitor()
-current_monitor.ina = ina
+# --- Power monitoring (ina injected at construction) ---
+current_monitor = CurrentMonitor(ina=ina)
 
-# --- Initialize menu (before modules so we can wire everything properly) ---
-menu = MenuController(current_monitor=current_monitor)
+# --- LED Calibration & Controller (must come before menu) ---
+cal = LedCalibration(pixels, ina, headroom=0.8)  # 0.8 is intentionally more conservative than the default 0.9
+cal.run()
+leds = LedController(pixels, ina)
+
+# --- Initialize menu (leds and current_monitor both ready) ---
+menu = MenuController(current_monitor=current_monitor, led_controller=leds)
 
 # --- Menu ticker (drives live updates, e.g. current readout) ---
 menu_updater = MenuUpdater(menu)
 
-# --- LED Calibration & Controller ---
-cal = LedCalibration(pixels, ina, headroom=0.8)
-cal.run()
-leds = LedController(pixels, ina)
-menu.leds = leds
-
 # --- LCD Lock Extension ---
 locks = LCDLockStatus(menu)
 
-serial_macros = SerialMacros()
-serial_macros.register_macro("MACRO_1", "MACRO_1")
-serial_macros.register_macro("MACRO_2", "MACRO_2")
-serial_macros.register_macro("MACRO_3", "MACRO_3")
-serial_macros.register_macro("MACRO_4", "MACRO_4")
-serial_macros.register_macro("MACRO_5", "MACRO_5")
-serial_macros.register_macro("MACRO_6", "MACRO_6")
-
-serial_macros.menu = menu
+# --- Serial macros (menu injected at construction) ---
+serial_macros = SerialMacros(menu=menu)
+for i in range(1, 7):
+    serial_macros.register_macro(f"MACRO_{i}", f"MACRO_{i}")
 
 # ==========================================================
 # FINAL MODULE REGISTRATION
