@@ -4,6 +4,7 @@ from adafruit_ina219 import INA219
 # --- KMK Core ---
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners import DiodeOrientation
+from settling_matrix_scanner import SettlingMatrixScanner
 from kmk.modules.macros import Macros
 from kmk.modules.layers import Layers
 from encoder_extension import EncoderHandlerWithFuncs
@@ -38,14 +39,17 @@ ina = INA219(i2c)
 
 # --- Core Keyboard ---
 keyboard = KMKKeyboard()
-keyboard.row_pins = (board.D2, board.D3, board.D4, board.D5, board.D6, board.D7)
-keyboard.col_pins = (
-    board.D8, board.D9, board.D10, board.D14, board.D15,
-    board.D18, board.D19, board.D20, board.D21, board.D22,
-    board.D23, board.D24, board.D25, board.D13, board.D11,
-    board.D28, board.D29, board.D30, board.D31, board.D32
+keyboard.matrix = SettlingMatrixScanner(
+    row_pins=(board.D2, board.D3, board.D4, board.D5, board.D6, board.D7),
+    column_pins=(
+        board.D8, board.D9, board.D10, board.D14, board.D15,
+        board.D18, board.D19, board.D20, board.D21, board.D22,
+        board.D23, board.D24, board.D25, board.D13, board.D11,
+        board.D28, board.D29, board.D30, board.D31, board.D32
+    ),
+    columns_to_anodes=False,
+    settle_time_us=50,
 )
-keyboard.diode_orientation = DiodeOrientation.ROW2COL
 
 # ==========================================================
 # KMK MODULES
