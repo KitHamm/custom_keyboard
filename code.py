@@ -145,5 +145,5 @@ keyboard.keymap = [
 # RUN KMK
 # ==========================================================
 
-menu.play_boot_animation()
+# menu.play_boot_animation()
 keyboard.go()
